@@ -4,6 +4,7 @@ module Lib (
     Instruction(..),
     Insts,
     Stack,
+    Args,
     exec
 ) where
 
@@ -29,6 +30,8 @@ data Instruction
 type Stack = [Value]
 type Insts = [Instruction]
 
+type Args = [Value]
+
 applyOp :: Operation -> Stack -> Either String Stack
 applyOp Addition ((Number op1):(Number op2):stack) = Right $ Number (op1 + op2):stack
 applyOp Subtraction ((Number op1):(Number op2):stack) = Right $ Number (op1 - op2):stack
@@ -39,12 +42,12 @@ applyOp Equals (val1:val2:vals) = Right $ Boolean (val1 == val2):vals
 applyOp LessThan ((Number val1):(Number val2):vals) = Right $ Boolean (val1 > val2):vals
 applyOp op _ = Left $ "Invalid arguments to " ++ show op
 
-exec :: Insts -> Stack -> Either String Value
-exec [] _ = Left "Missing return instruction"
-exec (Ret:_) [] = Left "No value to return"
-exec (Ret:_) (val:_) = Right val
-exec ((Push val):insts) stack = exec insts (val:stack)
-exec ((JumpIfFalse n):insts) ((Boolean False):stack) = exec (drop n insts) stack
-exec ((JumpIfFalse _):insts) ((Boolean True):stack) = exec insts stack
-exec ((JumpIfFalse _):_) _ = Left "Invalid Jump arguments"
-exec ((Call op):insts) stack = applyOp op stack >>= exec insts
+exec :: Args -> Insts -> Stack -> Either String Value
+exec args [] _ = Left "Missing return instruction"
+exec args (Ret:_) [] = Left "No value to return"
+exec args (Ret:_) (val:_) = Right val
+exec args ((Push val):insts) stack = exec args insts (val:stack)
+exec args ((JumpIfFalse n):insts) ((Boolean False):stack) = exec args (drop n insts) stack
+exec args ((JumpIfFalse _):insts) ((Boolean True):stack) = exec args insts stack
+exec args ((JumpIfFalse _):_) _ = Left "Invalid Jump arguments"
+exec args ((Call op):insts) stack = applyOp op stack >>= exec args insts
