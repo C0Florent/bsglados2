@@ -28,4 +28,11 @@ main = do
           , Call Subtraction
           , Ret
         ]
+        , [ Push (Number 10)
+          , Call Addition
+        ]
+        , [ Push (Number 0)
+          , Push (Number 42)
+          , Call Division
+          ]
         ]
