@@ -15,6 +15,8 @@ data Operation
     | Subtraction
     | Multiplication
     | Division
+    | Equals
+    | LessThan
     deriving (Eq, Show)
 
 data Instruction
@@ -30,8 +32,10 @@ applyOp :: Operation -> Stack -> Either String Stack
 applyOp Addition ((Number op1):(Number op2):stack) = Right $ Number (op1 + op2):stack
 applyOp Subtraction ((Number op1):(Number op2):stack) = Right $ Number (op1 - op2):stack
 applyOp Multiplication ((Number op1):(Number op2):stack) = Right $ Number (op1 * op2):stack
-applyOp Division ((Number op1):(Number op2):stack) = Right $ Number (op1 `div` op2):stack
 applyOp Division (_:(Number 0):_) = Left "Division by zero"
+applyOp Division ((Number op1):(Number op2):stack) = Right $ Number (op1 `div` op2):stack
+applyOp Equals (val1:val2:vals) = Right $ Boolean (val1 == val2):vals
+
 applyOp op _ = Left $ "Invalid arguments to " ++ show op
 
 exec :: Insts -> Stack -> Either String Value
