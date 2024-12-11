@@ -3,7 +3,7 @@ import Lib (exec,
     Ret,
     Call),
     Value (Number),
-    Operation (Subtraction, Addition, Division, Equals),
+    Operation (Subtraction, Addition, Division, Equals, LessThan),
     Insts,
     )
 
@@ -39,6 +39,21 @@ main = do
         , [ Push (Number 10)
           , Push (Number 10)
           , Call Equals
+          , Ret
+          ]
+        , [ Push (Number 10)
+          , Push (Number 42)
+          , Call Equals
+          , Ret
+          ]
+        , [ Push (Number 2)
+          , Push (Number 5)
+          , Call LessThan
+          , Ret
+          ]
+        , [ Push (Number 7)
+          , Push (Number 9)
+          , Call LessThan
           , Ret
           ]
         ]
