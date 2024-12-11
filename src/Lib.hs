@@ -22,6 +22,7 @@ data Operation
 data Instruction
     = Push Value
     | Call Operation
+    | JumpIfFalse Int
     | Ret
     deriving (Eq, Show)
 
@@ -36,7 +37,6 @@ applyOp Division (_:(Number 0):_) = Left "Division by zero"
 applyOp Division ((Number op1):(Number op2):stack) = Right $ Number (op1 `div` op2):stack
 applyOp Equals (val1:val2:vals) = Right $ Boolean (val1 == val2):vals
 applyOp LessThan ((Number val1):(Number val2):vals) = Right $ Boolean (val1 > val2):vals
-
 applyOp op _ = Left $ "Invalid arguments to " ++ show op
 
 exec :: Insts -> Stack -> Either String Value
@@ -44,4 +44,7 @@ exec [] _ = Left "Missing return instruction"
 exec (Ret:_) [] = Left "No value to return"
 exec (Ret:_) (val:_) = Right val
 exec ((Push val):insts) stack = exec insts (val:stack)
+exec ((JumpIfFalse n):insts) ((Boolean False):stack) = exec (drop n insts) stack
+exec ((JumpIfFalse _):insts) ((Boolean True):stack) = exec insts stack
+exec ((JumpIfFalse _):_) _ = Left "Invalid Jump arguments"
 exec ((Call op):insts) stack = applyOp op stack >>= exec insts
