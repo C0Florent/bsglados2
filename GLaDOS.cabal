@@ -1,6 +1,6 @@
 cabal-version: 2.2
 
--- This file has been generated from package.yaml by hpack version 0.36.0.
+-- This file has been generated from package.yaml by hpack version 0.37.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -26,9 +26,6 @@ source-repository head
 library
   exposed-modules:
       Lib
-      Megaparsec96
-      Parser
-      Parser.Internal
   other-modules:
       Paths_GLaDOS
   autogen-modules:
@@ -48,7 +45,6 @@ library
 executable GLaDOS-exe
   main-is: Main.hs
   other-modules:
-      Repl
       Paths_GLaDOS
   autogen-modules:
       Paths_GLaDOS
